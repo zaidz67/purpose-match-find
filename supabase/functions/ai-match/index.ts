@@ -77,13 +77,21 @@ serve(async (req) => {
             - Professional background and intent
             - Career aspirations and purpose
             
-            Return a JSON array of matches with scores (0-100) and explanations. Each match should have:
-            - profile_id: the profile ID
-            - score: match score 0-100
-            - explanation: 2-3 sentences explaining why they match
-            - top_attributes: array of 3 key matching points
+            IMPORTANT: You must return a JSON object with this exact structure:
+            {
+              "matches": [
+                {
+                  "profile_id": "the profile UUID",
+                  "score": 75,
+                  "explanation": "2-3 sentences explaining why they match",
+                  "top_attributes": ["attribute 1", "attribute 2", "attribute 3"]
+                }
+              ]
+            }
             
-            Sort by score descending. Only include matches with score >= 50.`
+            Sort matches by score descending. Only include matches with score >= 50.
+            If no good matches are found, return {"matches": []}.
+            Be generous with matching - look for any relevant connections in skills, interests, or goals.`
           },
           {
             role: "user",
@@ -101,11 +109,23 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
+    console.log('Raw AI response:', JSON.stringify(aiData, null, 2));
+    
     const aiContent = JSON.parse(aiData.choices[0].message.content);
-    console.log('AI analysis complete:', aiContent);
+    console.log('Parsed AI content:', JSON.stringify(aiContent, null, 2));
+
+    // Handle both array and object responses
+    let matchesArray = [];
+    if (Array.isArray(aiContent)) {
+      matchesArray = aiContent;
+    } else if (aiContent.matches && Array.isArray(aiContent.matches)) {
+      matchesArray = aiContent.matches;
+    }
+    
+    console.log(`AI returned ${matchesArray.length} matches`);
 
     // Enrich matches with full profile data
-    const matches = aiContent.matches?.map((match: any) => {
+    const matches = matchesArray.map((match: any) => {
       const profile = profiles?.find(p => p.id === match.profile_id);
       return {
         ...match,
