@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { Send, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
-
 interface Message {
   id: string;
   sender_id: string;
@@ -33,6 +33,7 @@ export const MessageThread = ({
   const [otherUserProfile, setOtherUserProfile] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMessages();
@@ -159,16 +160,27 @@ export const MessageThread = ({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b flex items-center gap-3">
-        <Avatar>
-          <AvatarImage src={otherUserProfile?.avatar_url || ""} />
-          <AvatarFallback>
-            {otherUserProfile?.full_name?.charAt(0).toUpperCase() || "U"}
-          </AvatarFallback>
-        </Avatar>
-        <h2 className="font-semibold">
-          {otherUserProfile?.full_name || "Unknown User"}
-        </h2>
+      <div className="p-4 border-b flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarImage src={otherUserProfile?.avatar_url || ""} />
+            <AvatarFallback>
+              {otherUserProfile?.full_name?.charAt(0).toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <h2 className="font-semibold">
+            {otherUserProfile?.full_name || "Unknown User"}
+          </h2>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(`/profile/${otherUserId}`)}
+          className="gap-2"
+        >
+          <User className="h-4 w-4" />
+          View Profile
+        </Button>
       </div>
 
       {/* Messages */}

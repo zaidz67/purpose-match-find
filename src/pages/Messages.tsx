@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ConversationList } from "@/components/messages/ConversationList";
 import { MessageThread } from "@/components/messages/MessageThread";
 import { Card } from "@/components/ui/card";
+import { Navbar } from "@/components/layout/Navbar";
 
 const Messages = () => {
   const { conversationId } = useParams();
@@ -25,8 +26,9 @@ const Messages = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 p-4 md:p-8">
-      <div className="container mx-auto max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
+      <Navbar />
+      <div className="container mx-auto max-w-7xl p-4 md:p-8">
         <h1 className="text-3xl font-bold mb-6">Messages</h1>
         
         <Card className="h-[calc(100vh-200px)] grid grid-cols-1 md:grid-cols-3 overflow-hidden">
