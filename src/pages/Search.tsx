@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search as SearchIcon, Loader2, Sparkles } from "lucide-react";
 import { MatchCard } from "@/components/search/MatchCard";
 import { useToast } from "@/hooks/use-toast";
+import { Navbar } from "@/components/layout/Navbar";
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -79,8 +80,9 @@ const Search = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 p-8">
-      <div className="container mx-auto max-w-6xl space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
+      <Navbar />
+      <div className="container mx-auto max-w-6xl space-y-8 p-8">
         {/* Search Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-primary">

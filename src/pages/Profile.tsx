@@ -10,6 +10,7 @@ import { IkigaiVisualization } from "@/components/profile/IkigaiVisualization";
 import { Loader2, MapPin, Briefcase, Link as LinkIcon, Github, Linkedin, Twitter, Mail, Sparkles, UserPlus, Check, X, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useConnection } from "@/hooks/useConnection";
+import { Navbar } from "@/components/layout/Navbar";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -147,8 +148,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10 p-8">
-      <div className="container mx-auto max-w-6xl space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
+      <Navbar />
+      <div className="container mx-auto max-w-6xl space-y-8 p-8">
         {/* Match Score Banner */}
         {matchScore && (
           <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-2 border-primary/20">

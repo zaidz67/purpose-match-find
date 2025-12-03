@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface Conversation {
@@ -27,6 +30,7 @@ export const ConversationList = ({
 }: ConversationListProps) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchConversations();
@@ -146,40 +150,53 @@ export const ConversationList = ({
     <ScrollArea className="h-full">
       <div className="space-y-1">
         {conversations.map((conversation) => (
-          <button
+          <div
             key={conversation.id}
-            onClick={() => onSelectConversation(conversation.id)}
-            className={`w-full flex items-start gap-3 p-4 hover:bg-accent/50 transition-colors ${
+            className={`flex items-start gap-3 p-4 hover:bg-accent/50 transition-colors ${
               selectedConversationId === conversation.id ? "bg-accent" : ""
             }`}
           >
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={conversation.avatar_url || ""} />
-              <AvatarFallback>
-                {conversation.full_name?.charAt(0).toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 text-left min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <p className="font-medium truncate">{conversation.full_name}</p>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  {formatDistanceToNow(new Date(conversation.last_message_time), {
-                    addSuffix: true,
-                  })}
-                </span>
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-sm text-muted-foreground truncate">
-                  {conversation.last_message}
-                </p>
-                {conversation.unread_count > 0 && (
-                  <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
-                    {conversation.unread_count}
+            <button
+              onClick={() => onSelectConversation(conversation.id)}
+              className="flex items-start gap-3 flex-1 text-left"
+            >
+              <Avatar className="h-12 w-12">
+                <AvatarImage src={conversation.avatar_url || ""} />
+                <AvatarFallback>
+                  {conversation.full_name?.charAt(0).toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-medium truncate">{conversation.full_name}</p>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    {formatDistanceToNow(new Date(conversation.last_message_time), {
+                      addSuffix: true,
+                    })}
                   </span>
-                )}
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm text-muted-foreground truncate">
+                    {conversation.last_message}
+                  </p>
+                  {conversation.unread_count > 0 && (
+                    <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
+                      {conversation.unread_count}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(`/profile/${conversation.id}`)}
+              className="shrink-0"
+              title="View Profile"
+            >
+              <User className="h-4 w-4" />
+            </Button>
+          </div>
         ))}
       </div>
     </ScrollArea>

@@ -3,16 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Compass, Search, LogOut, User, MessageSquare, Users } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Search, Users } from "lucide-react";
 import { ConnectionsManager } from "@/components/connections/ConnectionsManager";
+import { Navbar } from "@/components/layout/Navbar";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
   const [pendingCount, setPendingCount] = useState(0);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     const getUser = async () => {
@@ -44,33 +43,9 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/dashboard")}>
-            <Compass className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold gradient-text">Ikigai Match</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/messages")} className="relative">
-              <MessageSquare className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="relative">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <div className="container mx-auto px-4 py-12">
         {/* Welcome Section */}
