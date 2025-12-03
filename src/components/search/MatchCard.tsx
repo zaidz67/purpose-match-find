@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Sparkles } from "lucide-react";
+import { MapPin, Sparkles, MessageSquare, UserPlus, Check, Loader2, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useConnection } from "@/hooks/useConnection";
 
 interface MatchCardProps {
   match: {
@@ -31,6 +32,13 @@ interface MatchCardProps {
 export const MatchCard = ({ match }: MatchCardProps) => {
   const navigate = useNavigate();
   const { profile, score, explanation, top_attributes } = match;
+  
+  const {
+    connectionStatus,
+    isLoading: connectionLoading,
+    sendConnectionRequest,
+    acceptConnection,
+  } = useConnection(profile.id);
 
   const getMatchCategory = (score: number) => {
     if (score >= 90) return { label: "Perfect Match", color: "bg-emerald-500" };
@@ -40,6 +48,55 @@ export const MatchCard = ({ match }: MatchCardProps) => {
 
   const category = getMatchCategory(score);
   const initials = profile.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
+
+  const handleMessage = () => {
+    navigate(`/messages/${profile.id}`);
+  };
+
+  const handleConnect = async () => {
+    await sendConnectionRequest();
+  };
+
+  const renderConnectButton = () => {
+    if (connectionLoading) {
+      return (
+        <Button variant="outline" className="flex-1" disabled>
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </Button>
+      );
+    }
+
+    switch (connectionStatus) {
+      case "accepted":
+        return (
+          <Button variant="outline" className="flex-1" disabled>
+            <UserCheck className="h-4 w-4 mr-1" />
+            Connected
+          </Button>
+        );
+      case "pending_sent":
+        return (
+          <Button variant="outline" className="flex-1" disabled>
+            <UserPlus className="h-4 w-4 mr-1" />
+            Pending
+          </Button>
+        );
+      case "pending_received":
+        return (
+          <Button variant="outline" className="flex-1" onClick={acceptConnection}>
+            <Check className="h-4 w-4 mr-1" />
+            Accept
+          </Button>
+        );
+      default:
+        return (
+          <Button variant="outline" className="flex-1" onClick={handleConnect}>
+            <UserPlus className="h-4 w-4 mr-1" />
+            Connect
+          </Button>
+        );
+    }
+  };
 
   return (
     <Card className="p-6 hover:shadow-lg transition-all duration-300 border-border/50 bg-card/50 backdrop-blur-sm">
@@ -147,10 +204,16 @@ export const MatchCard = ({ match }: MatchCardProps) => {
             >
               View Profile
             </Button>
-            <Button variant="outline" className="flex-1">
-              Connect
-            </Button>
+            {renderConnectButton()}
           </div>
+          <Button 
+            variant="ghost" 
+            className="w-full"
+            onClick={handleMessage}
+          >
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Send Message
+          </Button>
         </div>
       </div>
     </Card>

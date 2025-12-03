@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Compass, Search, LogOut, User, MessageSquare } from "lucide-react";
+import { Compass, Search, LogOut, User, MessageSquare, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ConnectionsManager } from "@/components/connections/ConnectionsManager";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [pendingCount, setPendingCount] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -22,6 +24,15 @@ const Dashboard = () => {
           .eq("id", user.id)
           .single();
         setUser(profile);
+
+        // Fetch pending connection count
+        const { count } = await supabase
+          .from("connections")
+          .select("*", { count: "exact", head: true })
+          .eq("recipient_id", user.id)
+          .eq("status", "pending");
+        
+        setPendingCount(count || 0);
       }
     };
     getUser();
@@ -48,10 +59,10 @@ const Dashboard = () => {
             <span className="text-2xl font-bold gradient-text">Ikigai Match</span>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/messages")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/messages")} className="relative">
               <MessageSquare className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="relative">
               <User className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon" onClick={handleLogout}>
@@ -90,20 +101,37 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Recommendations Section - Placeholder */}
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Recommended for You</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="card-gradient border border-primary/10 rounded-xl p-6 smooth-transition hover:border-primary/30 hover:shadow-card"
-              >
-                <div className="h-48 bg-muted rounded-lg mb-4 animate-pulse"></div>
-                <div className="h-4 bg-muted rounded mb-2 animate-pulse"></div>
-                <div className="h-4 bg-muted rounded w-2/3 animate-pulse"></div>
-              </div>
-            ))}
+        {/* Main Content Grid */}
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+          {/* Connections Section */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-6">
+              <Users className="h-6 w-6 text-primary" />
+              <h2 className="text-2xl font-bold">Your Network</h2>
+              {pendingCount > 0 && (
+                <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                  {pendingCount} new
+                </span>
+              )}
+            </div>
+            <ConnectionsManager />
+          </div>
+
+          {/* Recommendations Section */}
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Recommended for You</h2>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="card-gradient border border-primary/10 rounded-xl p-4 smooth-transition hover:border-primary/30 hover:shadow-card"
+                >
+                  <div className="h-16 bg-muted rounded-lg mb-3 animate-pulse"></div>
+                  <div className="h-3 bg-muted rounded mb-2 animate-pulse"></div>
+                  <div className="h-3 bg-muted rounded w-2/3 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
