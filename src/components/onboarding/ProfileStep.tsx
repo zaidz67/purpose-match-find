@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { AvatarUpload, ResumeUpload } from "@/components/ui/file-upload";
 
 interface ProfileStepProps {
   onNext: () => void;
@@ -21,6 +22,8 @@ const ProfileStep = ({ onNext, onBack }: ProfileStepProps) => {
     intent: [] as string[],
     availability: "",
     commitmentLevel: "",
+    avatarUrl: "",
+    resumeUrl: "",
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -44,6 +47,8 @@ const ProfileStep = ({ onNext, onBack }: ProfileStepProps) => {
             intent: profile.current_intent || [],
             availability: profile.availability || "",
             commitmentLevel: profile.commitment_level || "",
+            avatarUrl: profile.avatar_url || "",
+            resumeUrl: profile.resume_url || "",
           });
         }
       }
@@ -67,6 +72,8 @@ const ProfileStep = ({ onNext, onBack }: ProfileStepProps) => {
         current_intent: formData.intent as any,
         availability: formData.availability as any,
         commitment_level: formData.commitmentLevel,
+        avatar_url: formData.avatarUrl || null,
+        resume_url: formData.resumeUrl || null,
       }).eq("id", user.id);
 
       if (error) throw error;
@@ -87,6 +94,12 @@ const ProfileStep = ({ onNext, onBack }: ProfileStepProps) => {
     }
   };
 
+  const initials = formData.fullName
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase() || "?";
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
@@ -94,6 +107,15 @@ const ProfileStep = ({ onNext, onBack }: ProfileStepProps) => {
         <p className="text-muted-foreground">
           Tell us about yourself to help others understand who you are.
         </p>
+      </div>
+
+      {/* Avatar Upload */}
+      <div className="flex justify-center">
+        <AvatarUpload
+          currentUrl={formData.avatarUrl}
+          onUpload={(url) => setFormData({ ...formData, avatarUrl: url })}
+          initials={initials}
+        />
       </div>
 
       <div className="space-y-4">
@@ -161,6 +183,15 @@ const ProfileStep = ({ onNext, onBack }: ProfileStepProps) => {
             placeholder="e.g., 20 hours/week"
             value={formData.commitmentLevel}
             onChange={(e) => setFormData({ ...formData, commitmentLevel: e.target.value })}
+          />
+        </div>
+
+        {/* Resume Upload */}
+        <div className="space-y-2">
+          <Label>Resume (Optional)</Label>
+          <ResumeUpload
+            currentUrl={formData.resumeUrl}
+            onUpload={(url) => setFormData({ ...formData, resumeUrl: url })}
           />
         </div>
       </div>
