@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AvatarUpload, ResumeUpload } from "@/components/ui/file-upload";
 
 const INTENT_OPTIONS = [
   { value: "cofounder", label: "Looking for a Cofounder" },
@@ -52,6 +53,8 @@ const EditProfile = () => {
     twitter_url: "",
     portfolio_url: "",
     is_searchable: true,
+    avatar_url: "",
+    resume_url: "",
   });
 
   useEffect(() => {
@@ -84,6 +87,8 @@ const EditProfile = () => {
             twitter_url: data.twitter_url || "",
             portfolio_url: data.portfolio_url || "",
             is_searchable: data.is_searchable ?? true,
+            avatar_url: data.avatar_url || "",
+            resume_url: data.resume_url || "",
           });
         }
       } catch (error: any) {
@@ -124,6 +129,8 @@ const EditProfile = () => {
           twitter_url: profile.twitter_url || null,
           portfolio_url: profile.portfolio_url || null,
           is_searchable: profile.is_searchable,
+          avatar_url: profile.avatar_url || null,
+          resume_url: profile.resume_url || null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
@@ -156,6 +163,12 @@ const EditProfile = () => {
     }));
   };
 
+  const initials = profile.full_name
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase() || "?";
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
@@ -184,6 +197,18 @@ const EditProfile = () => {
           <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Profile Photo */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">Profile Photo</h2>
+              <div className="flex justify-center">
+                <AvatarUpload
+                  currentUrl={profile.avatar_url}
+                  onUpload={(url) => setProfile({ ...profile, avatar_url: url })}
+                  initials={initials}
+                />
+              </div>
+            </div>
+
             {/* Basic Info */}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-foreground">Basic Information</h2>
@@ -330,6 +355,15 @@ const EditProfile = () => {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Resume */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">Resume</h2>
+              <ResumeUpload
+                currentUrl={profile.resume_url}
+                onUpload={(url) => setProfile({ ...profile, resume_url: url })}
+              />
             </div>
 
             {/* Visibility */}
