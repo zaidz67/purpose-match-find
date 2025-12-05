@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Users } from "lucide-react";
+import { Search, Users, Sparkles } from "lucide-react";
 import { ConnectionsManager } from "@/components/connections/ConnectionsManager";
+import { RecommendationsSection } from "@/components/dashboard/RecommendationsSection";
 import { Navbar } from "@/components/layout/Navbar";
 
 const Dashboard = () => {
@@ -94,19 +95,11 @@ const Dashboard = () => {
 
           {/* Recommendations Section */}
           <div>
-            <h2 className="text-2xl font-bold mb-6">Recommended for You</h2>
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="card-gradient border border-primary/10 rounded-xl p-4 smooth-transition hover:border-primary/30 hover:shadow-card"
-                >
-                  <div className="h-16 bg-muted rounded-lg mb-3 animate-pulse"></div>
-                  <div className="h-3 bg-muted rounded mb-2 animate-pulse"></div>
-                  <div className="h-3 bg-muted rounded w-2/3 animate-pulse"></div>
-                </div>
-              ))}
+            <div className="flex items-center gap-2 mb-6">
+              <Sparkles className="h-6 w-6 text-primary" />
+              <h2 className="text-2xl font-bold">Recommended</h2>
             </div>
+            <RecommendationsSection />
           </div>
         </div>
       </div>

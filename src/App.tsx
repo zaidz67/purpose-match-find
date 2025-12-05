@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import Search from "./pages/Search";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
@@ -74,6 +75,14 @@ const App = () => {
               element={
                 <ProtectedRoute session={session}>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit"
+              element={
+                <ProtectedRoute session={session}>
+                  <EditProfile />
                 </ProtectedRoute>
               }
             />

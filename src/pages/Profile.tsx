@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { IkigaiVisualization } from "@/components/profile/IkigaiVisualization";
-import { Loader2, MapPin, Briefcase, Link as LinkIcon, Github, Linkedin, Twitter, Mail, Sparkles, UserPlus, Check, X, UserCheck } from "lucide-react";
+import { Loader2, MapPin, Briefcase, Link as LinkIcon, Github, Linkedin, Twitter, Mail, Sparkles, UserPlus, Check, X, UserCheck, Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useConnection } from "@/hooks/useConnection";
 import { Navbar } from "@/components/layout/Navbar";
@@ -244,7 +244,14 @@ const Profile = () => {
               </div>
 
               {/* Action Buttons */}
-              {!isOwnProfile && (
+              {isOwnProfile ? (
+                <div className="flex flex-wrap gap-3">
+                  <Button className="w-full md:w-auto" size="lg" onClick={() => navigate("/profile/edit")}>
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit Profile
+                  </Button>
+                </div>
+              ) : (
                 <div className="flex flex-wrap gap-3">
                   <Button className="w-full md:w-auto" size="lg" onClick={handleSendMessage}>
                     <Mail className="h-4 w-4 mr-2" />
