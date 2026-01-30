@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Compass, Search, LogOut, User, MessageSquare, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -84,9 +85,12 @@ export const Navbar = () => {
             ))}
           </nav>
 
-          <Button variant="ghost" size="icon" onClick={() => setShowLogoutDialog(true)}>
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" onClick={() => setShowLogoutDialog(true)}>
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
