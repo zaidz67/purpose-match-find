@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Users, Compass, MessageCircle } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -13,7 +14,8 @@ const Landing = () => {
           <Compass className="h-8 w-8 text-primary" />
           <span className="text-2xl font-bold gradient-text">Ikigai Match</span>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
+          <ThemeToggle />
           <Button variant="ghost" onClick={() => navigate("/auth")}>
             Sign In
           </Button>
